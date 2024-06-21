@@ -1,0 +1,128 @@
+﻿@model ML.Vuelo
+@{
+    ViewData["Title"] = "Form";
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#destinoInput, #origenInput').on('input', function () {
+                var inputValue = $(this).val();
+                var regex = /^[a-zA-Z]{0,20}$/;
+                if (!regex.test(inputValue)) {
+                    $(this).css({ "border-color": "#F5B7B1", "background-color": "#F5B7B1" });
+                } else {
+                    $(this).css({ "border-color": "green", "background-color": "#C3F3CB" });
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $('#numeroVueloInput').on('input', function () {
+                var inputValue = $(this).val();
+                var regex = /^[0-9]{0,6}$/;
+                if (!regex.test(inputValue)) {
+                    $(this).css({ "border-color": "#F5B7B1", "background-color": "#F5B7B1" });
+                } else {
+                    $(this).css({ "border-color": "green", "background-color": "#C3F3CB" });
+                }
+            });
+        });
+
+        function validarHora(input, label) {
+            var valor = input.value.trim();
+            var regex24 = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
+            var regex12 = /^(0?[1-9]|1[0-2]):[0-5]\d\s?(AM|PM)$/i;
+
+            if (!regex24.test(valor) && !regex12.test(valor)) {
+                $('#' + label).text("ingresa una hora válida en formato HH:mm o HH:mm AM/PM");
+                $(input).css({ "border-color": "#F5B7B1", "background-color": "#F5B7B1" });
+            } else {
+                $('#' + label).text("");
+                $(input).css({ "border-color": "green", "background-color": "#C3F3CB" });
+            }
+        }
+    </script>
+}
+
+<div style="text-align: center; background-color: #d6eafa; padding: 20px;">
+    <h2>Datos de Vuelo</h2>
+
+    <div style="display: flex; justify-content: center;">
+        <div style="border: 2px solid #ccc; border-radius: 10px; padding: 20px; width: 80%;">
+
+            @using (Html.BeginForm("Form", "Vuelo", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+
+                    <div style="flex-basis: 30%; padding: 5px;">
+
+                        <!-- Campos de la izquierda -->
+                        @Html.HiddenFor(model => model.IdVuelo)
+
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="margin-bottom: 10px;">
+                                <label style="text-align: center;">
+                                    @Html.LabelFor(model => model.Origen)
+                                </label>
+                            </div>
+                            @Html.TextBoxFor(model => model.Origen, new { @class = "form-control", id = "origenInput" })
+                            
+
+                            <div style="margin-top: 10px;">
+                                <label style="text-align: center;">
+                                    @Html.LabelFor(model => model.Destino)
+                                </label>
+                            </div>
+                            @Html.TextBoxFor(model => model.Destino, new { @class = "form-control", id = "destinoInput" })
+                            <p id="destinoInput" style="color: red;"></p>
+                        </div>
+
+                    </div>
+
+                    <div style="flex-basis: 30%; padding: 5px;">
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="margin-bottom: 10px;">
+                                <label style="text-align: center;">
+                                    @Html.LabelFor(model => model.NumeroVuelo)
+                                </label>
+                            </div>
+                            @Html.TextBoxFor(model => model.NumeroVuelo, new { @class = "form-control", id = "numeroVueloInput" })
+
+                            <div style="margin-top: 10px;">
+                                <label style="text-align: center;">
+                                    @Html.LabelFor(model => model.HoraSalida)
+                                </label>
+                            </div>
+                            @Html.TextBoxFor(model => model.HoraSalida, "{0:h:mm tt}", new { @class = "form-control", @type = "text", @onblur = "validarHora(this, 'horaSalidaLabel')" })
+                            <p id="horaSalidaLabel" style="color: red;"></p>
+                        </div>
+                    </div>
+
+                    <div style="flex-basis: 30%; padding: 5px;">
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="margin-bottom: 10px;">
+                                <label style="text-align: center;">
+                                    @Html.LabelFor(model => model.HoraLLegada)
+                                </label>
+                            </div>
+                            @Html.TextBoxFor(model => model.HoraLLegada, "{0:h:mm tt}", new { @class = "form-control", @type = "text", @onblur = "validarHora(this, 'horaLLegadaLabel')" })
+                            <p id="horaLLegadaLabel" style="color: red;"></p>
+                            <div style="margin-top: 10px;">
+                                <label style="text-align: center;">
+                                    @Html.LabelFor(model => model.Aerolinea.AerolineaNombre)
+                                </label>
+                            </div>
+                            @Html.DropDownListFor(Model => Model.Aerolinea.IdAerolinea, new SelectList(Model.Aerolinea.Listaerolineas, "IdAerolinea", "AerolineaNombre"), "Seleccione una opción", new { @class = "form-control mb-2", style = "width: 100%;" })
+                        </div>
+                    </div>
+                </div>
+
+                @Html.Hidden("Aerolinea.Listaerolineas", "")
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button id="btnGuardar" type="submit" style="padding: 10px 60px; font-size: 16px;" class="btn btn-outline-primary btn-s">Guardar</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

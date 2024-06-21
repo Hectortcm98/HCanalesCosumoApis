@@ -1,0 +1,70 @@
+﻿@model ML.Vuelo
+@{
+    ViewData["Title"] = "GetAll";
+}
+<div class="modal-body">
+    <h5>@ViewBag.Text</h5>
+</div>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.0/font/bootstrap-icons.css" rel="stylesheet">
+
+
+<style>
+    body {
+        background-color: #d6eafa; /* Color de fondo deseado */
+    }
+
+    h2 {
+        text-align: center;
+    }
+</style>
+
+<h1 style="text-align:center">Registro de vuelos</h1>
+
+<table class="table table- table-hover table-bordered border border-primary  border-3">
+
+    <thead class="table-secondary">
+        <tr class="text-center">
+            <th></th>
+            <th>Numero de vuelo</th>
+            <th>Destino</th>
+            <th>Origen</th>
+            <th>Hora de salida</th>
+            <th>Hora de llegada</th>
+            <th>Aerolinea</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+       
+         @foreach (ML.Vuelo vuelos in Model.ListVuelos)
+        {
+
+            <tr class="text-center">
+                <td>
+                    <a class="btn btn-secondary" style="background-color: transparent;  border: none;" href="@Url.Action("Form", "Vuelo", new { IdVuelo = vuelos.IdVuelo})">
+                        <i class="bi bi-pencil-square fs-3 text-primary"></i>
+                    </a>
+                </td>
+
+                <td>@vuelos.NumeroVuelo</td>
+                <td>@vuelos.Destino</td>
+                <td>@vuelos.Origen</td>
+                <td>@vuelos.HoraSalida</td>
+                <td>@vuelos.HoraLLegada</td>
+                <td> @vuelos.Aerolinea.AerolineaNombre</td>
+
+                <td>
+                    <a class="btn btn-primary" style="background-color: transparent;  border: none;" onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?');"
+                       href="@Url.Action("Delete", "Vuelo", new { IdVuelo = vuelos.IdVuelo})"><i class="bi bi-trash fs-3 text-primary"></i></a>
+
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+<div class="row">
+    <div class="col-md-12">
+        <a href="@Url.Action("Form", "Vuelo")" class="btn btn-primary float-right">Agregar</a>
+    </div>
+</div>
